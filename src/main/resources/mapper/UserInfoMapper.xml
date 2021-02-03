@@ -13,4 +13,11 @@
             AND u.sex = #{sex}
         </if>
     </select>
+    <update id="updateState">
+        update user_info set status=#{flag}
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

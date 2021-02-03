@@ -7,6 +7,7 @@ import com.ecpbm.pojo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,5 +32,18 @@ public class UserService {
     public Page<UserInfo> getPage(Integer pageNum, Integer pageSize, String userName, String sex) {
         Page<UserInfo> dtoPage = new Page<>(pageNum, pageSize);
         return userInfoMapper.getUserInfoPage(userName, sex, dtoPage);
+    }
+
+    /**
+     * 更新用户状态
+     * @return
+     */
+    public void modifyStatus(String ids, int flag) {
+        List<String> list = new ArrayList<>();
+        String a []  = ids.split(",");
+        for(int i=0;i<a.length;i++){
+            list.add(a[i]);
+        }
+        userInfoMapper.updateState(list, flag);
     }
 }

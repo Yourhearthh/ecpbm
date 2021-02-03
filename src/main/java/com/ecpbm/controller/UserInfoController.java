@@ -2,6 +2,7 @@ package com.ecpbm.controller;
 
 import com.ecpbm.pojo.BaseResponse;
 import com.ecpbm.pojo.PageResponse;
+import com.ecpbm.pojo.ResultCode;
 import com.ecpbm.pojo.UserInfo;
 import com.ecpbm.service.UserService;
 import io.swagger.annotations.Api;
@@ -45,6 +46,24 @@ public class UserInfoController {
             @RequestParam(value = "sex",required = false) String sex
     ) {
         return PageResponse.success(userService.getPage(pageNum, pageSize, userName, sex));
+    }
+
+    @ApiOperation("更新用户状态")
+    @GetMapping("/setIsEnableUser")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uids", value = "用户id", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "flag", value = "用户状态", dataType = "String", paramType = "query")
+    })
+    public BaseResponse setIsEnableUser(@RequestParam(value = "uids") String uids,
+                                           @RequestParam(value = "flag") String flag
+    ) {
+        try {
+            userService.modifyStatus(uids, Integer.parseInt(flag));
+            return BaseResponse.success(ResultCode.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(ResultCode.FAILED);
+        }
+
     }
 
 
