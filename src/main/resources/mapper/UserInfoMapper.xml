@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecpbm.dao.mapper.UserInfoMapper">
+    <!--固废运输联单列表-->
+    <select id="getUserInfoPage" resultType="com.ecpbm.pojo.UserInfo">
+        SELECT * FROM `user_info` u where 1=1
+        <if test="userName!=null">
+            AND u.userName LIKE concat('%', #{userName}, '%')
+        </if>
+        <if test="sex!=null">
+            AND u.sex = #{sex}
+        </if>
+    </select>
+</mapper>
