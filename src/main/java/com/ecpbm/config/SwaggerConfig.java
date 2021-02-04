@@ -38,7 +38,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("包光宇的电商仓库")
+                .title("爱的电商仓库")
                 .description("一个电商的仓库管理系统")
                 .version("1.0.1")
                 .build();

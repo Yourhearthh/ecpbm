@@ -25,6 +25,7 @@
             AND p.price &lt; #{priceTo}
         </if>
     </select>
+    <!--商品下架-->
     <update id="deleteProduct">
         update product_info set status=#{flag}
         where id in
@@ -32,4 +33,12 @@
             #{item}
         </foreach>
     </update>
+    <!--删除商品-->
+    <delete id="deleteProductById">
+        delete from product_info
+        where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

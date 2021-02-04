@@ -7,12 +7,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.List;
 
 @RestController
@@ -79,6 +77,27 @@ public class ProductInfoController {
                                          HttpServletRequest request) {
         try {
             productService.addProduct(productInfo, file, request);
+            return BaseResponse.success(ResultCode.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(ResultCode.FAILED);
+        }
+
+    }
+
+    @ApiOperation("获取在售商品")
+    @GetMapping("/getSaleOnProduct")
+    @ApiImplicitParam(name = "status", value = "商品状态（0：下架；1：在售）", dataType = "int", paramType = "query")
+    public BaseResponse<List<ProductInfo>> getSaleOnProduct(Integer status) {
+        List<ProductInfo> infoList = productService.getSaleOnProduct(status);
+        return BaseResponse.success(infoList);
+    }
+
+    @ApiOperation("删除商品")
+    @GetMapping("/deleteProductById")
+    @ApiImplicitParam(name = "ids", value = "商品id,可传多个（用，号分隔开）", dataType = "String", paramType = "query")
+    public BaseResponse deleteProductById(@RequestParam(value = "ids") String ids) {
+        try {
+            productService.deleteProductById(ids);
             return BaseResponse.success(ResultCode.SUCCESS);
         } catch (Exception e) {
             return BaseResponse.success(ResultCode.FAILED);

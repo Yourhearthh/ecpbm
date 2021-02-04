@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -111,5 +112,26 @@ public class ProductService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取在售商品
+     * @param status
+     * @return
+     */
+    public List<ProductInfo> getSaleOnProduct(Integer status) {
+        List<ProductInfo> productInfoList = productInfoService.list(new QueryWrapper<ProductInfo>().eq("status", status));
+        return productInfoList;
+    }
+
+    /**
+     * 根据id删除该商品
+     * @param ids
+     */
+    public void deleteProductById(String ids) {
+        List<String> list = new ArrayList<>();
+        String[] str = ids.split(",");
+        Collections.addAll(list, str);
+        productInfoMapper.deleteProductById(list);
     }
 }

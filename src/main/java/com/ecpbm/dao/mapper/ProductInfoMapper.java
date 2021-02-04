@@ -16,4 +16,6 @@ public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
     @Insert("insert into product_info(code,name,tid,brand,pic,num,price,intro,status) "
             + "values(#{code},#{name},#{tid},#{brand},#{pic},#{num},#{price},#{intro},#{status})")
     void addProductInfo(ProductInfo productInfo);
+
+    void deleteProductById(List<String> list);
 }
