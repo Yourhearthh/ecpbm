@@ -10,7 +10,11 @@ import com.ecpbm.pojo.ProductInfo;
 import com.ecpbm.pojo.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,7 +91,25 @@ public class ProductService {
      * @param productInfo
      * @return
      */
-    public int addProduct(ProductInfo productInfo) {
-        return 0;
+    @Transactional
+    public void addProduct(ProductInfo productInfo, MultipartFile file, HttpServletRequest request) {
+        // 服务器端upload文件夹物理路径
+        String path = request.getSession().getServletContext().getRealPath("product_images");
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        // 实例化一个File对象，表示目标文件（含物理路径）
+        assert fileName != null;
+        File targetFile = new File(path, fileName);
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }
+        // 将上传文件写到服务器上指定的文件
+        try {
+            file.transferTo(targetFile);
+            productInfo.setPic(fileName);
+            productInfoMapper.addProductInfo(productInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

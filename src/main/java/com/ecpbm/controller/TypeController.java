@@ -39,7 +39,7 @@ public class TypeController {
 
     @ApiOperation("添加商品类型")
     @PostMapping("/addType")
-    public BaseResponse<Type> addType(Type type) {
+    public BaseResponse<Type> addType(@RequestBody Type type) {
         int t = typeService.addType(type);
         if (t > 0) {
             return BaseResponse.success(ResultCode.SUCCESS);

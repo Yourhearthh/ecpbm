@@ -7,8 +7,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -71,13 +75,15 @@ public class ProductInfoController {
 
     @ApiOperation("添加商品")
     @PostMapping("/addProduct")
-    public BaseResponse<Type> addProduct(ProductInfo productInfo) {
-        int t = productService.addProduct(productInfo);
-        if (t > 0) {
+    public BaseResponse addProduct(ProductInfo productInfo, @RequestParam(value = "file", required = false) MultipartFile file,
+                                         HttpServletRequest request) {
+        try {
+            productService.addProduct(productInfo, file, request);
             return BaseResponse.success(ResultCode.SUCCESS);
-        } else {
+        } catch (Exception e) {
             return BaseResponse.success(ResultCode.FAILED);
         }
+
     }
 
 
