@@ -2,12 +2,19 @@ package com.ecpbm.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ecpbm.dao.mapper.UserInfoMapper;
+import com.ecpbm.dao.service.AdminInfoServiceImpl;
+import com.ecpbm.dao.service.FunctionsServicesImpl;
 import com.ecpbm.dao.service.UserInfoServiceImpl;
+import com.ecpbm.pojo.AdminInfo;
+import com.ecpbm.pojo.Functions;
+import com.ecpbm.pojo.TreeNode;
 import com.ecpbm.pojo.UserInfo;
+import com.ecpbm.utils.JsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -16,6 +23,10 @@ public class UserService {
     UserInfoServiceImpl userInfoService;
     @Autowired
     UserInfoMapper userInfoMapper;
+    @Autowired
+    AdminInfoServiceImpl adminInfoService;
+    @Autowired
+    FunctionsServicesImpl functionsService;
 
     /**
      * 获取用户列表
@@ -45,5 +56,32 @@ public class UserService {
             list.add(a[i]);
         }
         userInfoMapper.updateState(list, flag);
+    }
+
+    /**
+     * 获取管理员的权限树
+     * @return
+     */
+    public List<TreeNode> getTree(Integer adminid) {
+        //获取管理员
+        AdminInfo adminInfo = adminInfoService.selectById(adminid);
+        List<TreeNode> nodes = new ArrayList<>();
+        //获取关联的Functions对象集合
+        List<Functions> functionsList = functionsService.list();
+//        List<Functions> functionsList = adminInfo.getFs();
+                // 对List<Functions>类型的Functions对象集合排序
+        Collections.sort(functionsList);
+        // 将排序后的Functions对象集合转换到List<TreeNode>类型的列表nodes
+        for (Functions functions : functionsList) {
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(functions.getId());
+            treeNode.setFid(functions.getParentid());
+            treeNode.setText(functions.getName());
+            nodes.add(treeNode);
+        }
+        // 调用自定义的工具类JsonFactory的buildtree方法，为nodes列表中的各个TreeNode元素中的
+        // children属性赋值(该节点包含的子节点)
+        List<TreeNode> treeNodes = JsonFactory.buildtree(nodes, 0);
+        return treeNodes;
     }
 }
