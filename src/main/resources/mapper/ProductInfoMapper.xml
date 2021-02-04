@@ -25,4 +25,11 @@
             AND p.price &lt; #{priceTo}
         </if>
     </select>
+    <update id="deleteProduct">
+        update product_info set status=#{flag}
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

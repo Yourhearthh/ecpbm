@@ -1,17 +1,13 @@
 package com.ecpbm.controller;
 
-import com.ecpbm.pojo.PageResponse;
-import com.ecpbm.pojo.ProductInfo;
+import com.ecpbm.pojo.*;
 import com.ecpbm.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +42,42 @@ public class ProductInfoController {
             @RequestParam(value = "priceTo",required = false) String priceTo
     ) {
         return PageResponse.success(productService.getProductPage(pageNum, pageSize, name, code, type, brand, priceFrom, priceTo));
+    }
+
+    @ApiOperation("商品下架")
+    @GetMapping("/deleteProduct")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ids", value = "商品id,可传多个（用，号分隔开）", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "flag", value = "商品状态（0：下架；1：在售）", dataType = "String", paramType = "query")
+    })
+    public BaseResponse deleteProduct(
+            @RequestParam(value = "ids") String ids,
+            @RequestParam(value = "flag") String flag) {
+        try {
+            productService.deleteProduct(ids, Integer.parseInt(flag));
+            return BaseResponse.success(ResultCode.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(ResultCode.FAILED);
+        }
+
+    }
+
+    @ApiOperation("根据商品id获取商品信息")
+    @GetMapping("/getProductById")
+    @ApiImplicitParam(name = "Id", value = "商品id", dataType = "int", paramType = "query")
+    public BaseResponse<ProductInfo> getProductById(Integer Id) {
+        return BaseResponse.success(productService.getProductById(Id));
+    }
+
+    @ApiOperation("添加商品")
+    @PostMapping("/addProduct")
+    public BaseResponse<Type> addProduct(ProductInfo productInfo) {
+        int t = productService.addProduct(productInfo);
+        if (t > 0) {
+            return BaseResponse.success(ResultCode.SUCCESS);
+        } else {
+            return BaseResponse.success(ResultCode.FAILED);
+        }
     }
 
 

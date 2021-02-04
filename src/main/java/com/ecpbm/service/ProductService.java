@@ -11,6 +11,10 @@ import com.ecpbm.pojo.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Service
 public class ProductService {
     @Autowired
@@ -20,6 +24,18 @@ public class ProductService {
     @Autowired
     TypeMapper typeMapper;
 
+    /**
+     * 获取商品分页列表
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @param code
+     * @param type
+     * @param brand
+     * @param priceFrom
+     * @param priceTo
+     * @return
+     */
     public Page<ProductInfo> getProductPage(Integer pageNum, Integer pageSize, String name, String code, String type, String brand, String priceFrom, String priceTo) {
         LambdaQueryWrapper<ProductInfo> queryWrapper = new LambdaQueryWrapper<>();
         if (name != null) {
@@ -43,5 +59,35 @@ public class ProductService {
         }
         Page<ProductInfo> infoPage = productInfoService.page(new Page<ProductInfo>(pageNum, pageSize), queryWrapper);
         return infoPage;
+    }
+
+    /**
+     * 商品下架
+     * @param ids
+     * @param flag
+     */
+    public void deleteProduct(String ids, int flag) {
+        List<String> list = new ArrayList<>();
+        String[] str = ids.split(",");
+        Collections.addAll(list, str);
+        productInfoMapper.deleteProduct(list, flag);
+    }
+
+    /**
+     * 根据商品id获取商品信息
+     * @param id
+     * @return
+     */
+    public ProductInfo getProductById(Integer id) {
+        return productInfoMapper.selectById(id);
+    }
+
+    /**
+     * 添加商品
+     * @param productInfo
+     * @return
+     */
+    public int addProduct(ProductInfo productInfo) {
+        return 0;
     }
 }
