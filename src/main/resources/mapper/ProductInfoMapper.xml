@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecpbm.dao.mapper.ProductInfoMapper">
+    <!--商品列表-->
+    <select id="getProductInfoPage" resultType="com.ecpbm.pojo.ProductInfo">
+        SELECT * FROM `product_info` p where 1=1
+        <if test="userName!=null">
+            AND p.name LIKE concat('%', #{name}, '%')
+        </if>
+        <if test="code!=null">
+            AND p.code = #{code}
+        </if>
+        <if test="tid!=null">
+            AND p.tid = #{tid}
+        </if>
+        <if test="brand!=null">
+            AND p.brand LIKE concat('%', #{brand}, '%')
+        </if>
+        <if test="priceFrom!=null">
+            AND p.price &gt; #{priceFrom}
+        </if>
+        <if test="priceTo!=null">
+            AND p.price &lt; #{priceTo}
+        </if>
+    </select>
+</mapper>
