@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecpbm.dao.mapper.OrderInfoMapper">
+<!--订单列表-->
+<select id="getOrderInfoPage" resultType="com.ecpbm.pojo.OrderInfo">
+    SELECT * FROM `order_info` o where 1=1
+    <if test="id!=null">
+        AND o.id = #{id}
+    </if>
+    <if test="uid!=null">
+        AND o.uid = #{uid}
+    </if>
+    <if test="status!=null">
+        AND o.status = #{status}
+    </if>
+    <if test="orderTimeFrom!=null">
+        AND o.ordertime &gt;= #{orderTimeFrom}
+    </if>
+    <if test="orderTimeTo!=null">
+        AND o.ordertime &lt;= #{orderTimeTo}
+    </if>
+</select>
+</mapper>
