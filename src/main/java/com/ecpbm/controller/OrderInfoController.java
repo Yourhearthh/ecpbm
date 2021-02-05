@@ -1,8 +1,6 @@
 package com.ecpbm.controller;
 
-import com.ecpbm.pojo.OrderInfo;
-import com.ecpbm.pojo.PageResponse;
-import com.ecpbm.pojo.ProductInfo;
+import com.ecpbm.pojo.*;
 import com.ecpbm.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -46,7 +44,19 @@ public class OrderInfoController {
         return PageResponse.success(orderService.getOrderPage(pageNum, pageSize, id, userName, status, orderTimeFrom, orderTimeTo));
     }
 
+    @ApiOperation("根据订单id获取订单信息")
+    @GetMapping("/getOrderById")
+    @ApiImplicitParam(name = "Id", value = "订单id", dataType = "int", paramType = "query")
+    public BaseResponse<ProductInfo> getOrderById(Integer Id) {
+        return BaseResponse.success(orderService.getOrderById(Id));
+    }
 
+    @ApiOperation("根据订单id获取订单详细信息")
+    @GetMapping("/getOrderDetailById")
+    @ApiImplicitParam(name = "Id", value = "订单id", dataType = "int", paramType = "query")
+    public BaseResponse<OrderInfoDetailDto> getOrderDetailById(Integer Id) {
+        return BaseResponse.success(orderService.getOrderDetailById(Id));
+    }
 
 
 

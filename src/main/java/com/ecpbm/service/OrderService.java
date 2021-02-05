@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ecpbm.dao.mapper.OrderInfoMapper;
+import com.ecpbm.dao.service.OrderDetailServiceImpl;
 import com.ecpbm.dao.service.OrderInfoServiceImpl;
+import com.ecpbm.dao.service.ProductInfoServiceImpl;
 import com.ecpbm.dao.service.UserInfoServiceImpl;
-import com.ecpbm.pojo.OrderInfo;
-import com.ecpbm.pojo.ProductInfo;
-import com.ecpbm.pojo.UserInfo;
+import com.ecpbm.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,10 @@ public class OrderService {
     UserInfoServiceImpl userInfoService;
     @Autowired
     OrderInfoMapper orderInfoMapper;
+    @Autowired
+    OrderDetailServiceImpl orderDetailService;
+    @Autowired
+    ProductInfoServiceImpl productInfoService;
 
     /**
      * 订单分页列表
@@ -79,4 +83,35 @@ public class OrderService {
 
     }
 
+    /**
+     * 获取订单
+     * @param id
+     * @return
+     */
+    public OrderInfo getOrderById(Integer id) {
+        return orderInfoService.getById(id);
+    }
+
+    /**
+     * 获取订单详细信息
+     * @param id
+     * @return
+     */
+    public OrderInfoDetailDto getOrderDetailById(Integer id) {
+        OrderInfoDetailDto detailDto = new OrderInfoDetailDto();
+        OrderInfo orderInfo = this.getOrderById(id);
+        detailDto.setUserName(userInfoService.getById(orderInfo.getUid()).getUserName());
+        detailDto.setOrderTime(orderInfo.getOrdertime());
+        detailDto.setStatus(orderInfo.getStatus());
+        //查询订单详细
+        OrderDetail orderDetail = orderDetailService.getOne(new QueryWrapper<OrderDetail>().eq("oid", orderInfo.getId()));
+        detailDto.setNum(orderDetail.getNum());
+        String pName = productInfoService.getById(orderDetail.getPid()).getName();
+        detailDto.setProductName(pName);
+        double price = productInfoService.getById(orderDetail.getPid()).getPrice();
+        detailDto.setPrice(price);
+        detailDto.setTotal(orderDetail.getNum() * price);
+        detailDto.setTotalMoney(orderDetail.getNum() * price);
+        return detailDto;
+    }
 }
