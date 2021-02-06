@@ -3,6 +3,7 @@ package com.ecpbm.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ecpbm.dao.mapper.OrderDetailMapper;
 import com.ecpbm.dao.mapper.OrderInfoMapper;
 import com.ecpbm.dao.service.OrderDetailServiceImpl;
 import com.ecpbm.dao.service.OrderInfoServiceImpl;
@@ -11,6 +12,12 @@ import com.ecpbm.dao.service.UserInfoServiceImpl;
 import com.ecpbm.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -24,6 +31,8 @@ public class OrderService {
     OrderDetailServiceImpl orderDetailService;
     @Autowired
     ProductInfoServiceImpl productInfoService;
+    @Autowired
+    OrderDetailMapper orderDetailMapper;
 
     /**
      * 订单分页列表
@@ -113,5 +122,24 @@ public class OrderService {
         detailDto.setTotal(orderDetail.getNum() * price);
         detailDto.setTotalMoney(orderDetail.getNum() * price);
         return detailDto;
+    }
+
+    /**
+     * 根据id删除订单
+     * @param ids
+     */
+    @Transactional
+    public void deleteOrder(String ids) {
+        List<String> stringList = new ArrayList<>();
+        String[] idStr = ids.split(",");
+        Collections.addAll(stringList, idStr);
+        List<OrderDetail> orderDetails = orderDetailService.list(new QueryWrapper<OrderDetail>().in("oid", stringList));
+        if (orderDetails.size() > 0) {
+            orderDetailMapper.deleteOrderDetail(stringList);
+        }
+        List<OrderInfo> orders = orderInfoService.listByIds(stringList);
+        if (orders.size() > 0) {
+            orderInfoMapper.deleteOrder(stringList);
+        }
     }
 }

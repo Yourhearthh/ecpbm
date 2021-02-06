@@ -58,6 +58,18 @@ public class OrderInfoController {
         return BaseResponse.success(orderService.getOrderDetailById(Id));
     }
 
+    @ApiOperation("根据订单id删除订单")
+    @GetMapping("/deleteOrder")
+    @ApiImplicitParam(name = "Ids", value = "订单id,可传多个（用，号分隔开）", dataType = "String", paramType = "query")
+    public BaseResponse deleteOrder(String Ids) {
+        try {
+            orderService.deleteOrder(Ids);
+            return BaseResponse.success(ResultCode.SUCCESS);
+        } catch (Exception e) {
+            return BaseResponse.success(ResultCode.FAILED);
+        }
+    }
+
 
 
 

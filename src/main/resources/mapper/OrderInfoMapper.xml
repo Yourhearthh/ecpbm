@@ -22,4 +22,12 @@
         AND o.ordertime &lt;= #{orderTimeTo}
     </if>
 </select>
+    <!--删除订单-->
+    <delete id="deleteOrder">
+        delete from order_info
+        where id in
+        <foreach collection="stringList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>
