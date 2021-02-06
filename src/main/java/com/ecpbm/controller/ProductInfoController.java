@@ -98,11 +98,10 @@ public class ProductInfoController {
     public BaseResponse deleteProductById(@RequestParam(value = "ids") String ids) {
         try {
             productService.deleteProductById(ids);
-            return BaseResponse.success(ResultCode.SUCCESS);
         } catch (Exception e) {
-            return BaseResponse.success(ResultCode.FAILED);
+            return BaseResponse.errorWithException(ResultCode.DELETE_FAILED, e);
         }
-
+        return BaseResponse.success(ResultCode.SUCCESS.message());
     }
 
 

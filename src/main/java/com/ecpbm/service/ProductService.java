@@ -3,9 +3,11 @@ package com.ecpbm.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ecpbm.dao.mapper.OrderDetailMapper;
 import com.ecpbm.dao.mapper.ProductInfoMapper;
 import com.ecpbm.dao.mapper.TypeMapper;
 import com.ecpbm.dao.service.ProductInfoServiceImpl;
+import com.ecpbm.pojo.OrderDetail;
 import com.ecpbm.pojo.ProductInfo;
 import com.ecpbm.pojo.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class ProductService {
     ProductInfoServiceImpl productInfoService;
     @Autowired
     TypeMapper typeMapper;
+    @Autowired
+    OrderDetailMapper orderDetailMapper;
 
     /**
      * 获取商品分页列表
@@ -128,10 +132,12 @@ public class ProductService {
      * 根据id删除该商品
      * @param ids
      */
+    @Transactional
     public void deleteProductById(String ids) {
         List<String> list = new ArrayList<>();
         String[] str = ids.split(",");
         Collections.addAll(list, str);
+//        List<OrderDetail> details = orderDetailMapper.selectList(new QueryWrapper<OrderDetail>().in("pid", list));
         productInfoMapper.deleteProductById(list);
     }
 }
