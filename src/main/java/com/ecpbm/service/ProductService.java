@@ -8,8 +8,10 @@ import com.ecpbm.dao.mapper.ProductInfoMapper;
 import com.ecpbm.dao.mapper.TypeMapper;
 import com.ecpbm.dao.service.ProductInfoServiceImpl;
 import com.ecpbm.pojo.OrderDetail;
+import com.ecpbm.pojo.ProductExportVo;
 import com.ecpbm.pojo.ProductInfo;
 import com.ecpbm.pojo.Type;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,5 +141,41 @@ public class ProductService {
         Collections.addAll(list, str);
 //        List<OrderDetail> details = orderDetailMapper.selectList(new QueryWrapper<OrderDetail>().in("pid", list));
         productInfoMapper.deleteProductById(list);
+    }
+
+    /**
+     * 获取导出的商品集合
+     * @return
+     */
+    public List<ProductExportVo> getProductExportVo() {
+        List<ProductExportVo> voList = new ArrayList<>();
+        List<ProductInfo> productInfoList = productInfoService.list();
+        for (ProductInfo productInfo : productInfoList) {
+            ProductExportVo exportVo = convertInfoToVo(productInfo);
+            voList.add(exportVo);
+        }
+        return voList;
+    }
+
+    /**
+     * 转换实体类为导出的VO
+     * @param productInfo
+     * @return
+     */
+    private ProductExportVo convertInfoToVo(ProductInfo productInfo) {
+        ProductExportVo exportVo = new ProductExportVo();
+        try {
+            Type type = typeMapper.selectById(productInfo.getTid());
+            exportVo.setType(type.getName());
+            if (productInfo.getStatus() == 1) {
+                exportVo.setStatus("在售");
+            } else if (productInfo.getStatus() == 0) {
+                exportVo.setStatus("下架");
+            }
+            BeanUtils.copyProperties(productInfo, exportVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return exportVo;
     }
 }

@@ -2,6 +2,7 @@ package com.ecpbm.controller;
 
 import com.ecpbm.pojo.*;
 import com.ecpbm.service.ProductService;
+import com.ecpbm.utils.ExportUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/productInfo")
@@ -102,6 +107,23 @@ public class ProductInfoController {
             return BaseResponse.errorWithException(ResultCode.DELETE_FAILED, e);
         }
         return BaseResponse.success(ResultCode.SUCCESS.message());
+    }
+
+    @ApiOperation("商品导出")
+    @GetMapping("/productExport")
+    public void productExport(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>();
+        StringBuffer title = new StringBuffer();
+        Calendar instance = Calendar.getInstance();
+        title.append(instance.get(Calendar.YEAR));
+        title.append("年");
+        title.append(instance.get(Calendar.MONTH) + 1);
+        title.append("月");
+//        String title = "2021年";
+        map.put("title", title);
+        List<ProductExportVo> productList = productService.getProductExportVo();
+        map.put("productList", productList);
+        ExportUtil.exportExcel("excel/商品.xlsx", "product", map, request, response);
     }
 
 
