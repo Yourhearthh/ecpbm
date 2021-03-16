@@ -78,6 +78,14 @@ public class BaseResponse<T> {
         return new BaseResponse(ResultCode.SUCCESS, data);
     }
 
+    public static <E> BaseResponse failure(E data) {
+        return new BaseResponse(ResultCode.LOGIN_FAILURE, data);
+    }
+
+    public static <E> BaseResponse noAuthority(E data) {
+        return new BaseResponse(ResultCode.NO_AUTHORITY, data);
+    }
+
     public static BaseResponse errorWithException(ResultCode resultCode, Exception ex) {
         LOGGER.error("response Exception", ex);
         return new BaseResponse<>(resultCode.code(), ex.getMessage());

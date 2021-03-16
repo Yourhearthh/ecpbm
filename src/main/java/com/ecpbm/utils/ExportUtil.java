@@ -81,7 +81,7 @@ public class ExportUtil {
             response.addHeader("FileName",responseFileName);
             responseOut = response.getOutputStream();
             Workbook workbook= ExcelExportUtil.exportExcel(params,map);
-            //一路一档系统导出模板处理
+            //对于特殊的数据需要经过处理
             if ("road-bridge".equals(mark)) {
                 Sheet sheet = workbook.getSheetAt(0);
                 //自动换行样式

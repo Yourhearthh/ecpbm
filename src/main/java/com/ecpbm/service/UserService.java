@@ -6,10 +6,7 @@ import com.ecpbm.dao.mapper.UserInfoMapper;
 import com.ecpbm.dao.service.AdminInfoServiceImpl;
 import com.ecpbm.dao.service.FunctionsServicesImpl;
 import com.ecpbm.dao.service.UserInfoServiceImpl;
-import com.ecpbm.pojo.AdminInfo;
-import com.ecpbm.pojo.Functions;
-import com.ecpbm.pojo.TreeNode;
-import com.ecpbm.pojo.UserInfo;
+import com.ecpbm.pojo.*;
 import com.ecpbm.utils.JsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,7 +90,7 @@ public class UserService {
      * @param ai
      * @return
      */
-    public AdminInfo login(AdminInfo ai) {
+    public AdminInfo login(LoginVo ai) {
         return adminInfoMapper.selectByNameAndPwd(ai);
     }
 }

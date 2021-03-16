@@ -23,19 +23,20 @@ public class AdminInfoController {
 
     @ApiOperation("登录")
     @PostMapping("/login")
-    public BaseResponse login(AdminInfo ai) {
+    public BaseResponse login(LoginVo ai) {
         AdminInfo adminInfo = userService.login(ai);
         ModelMap model = new ModelMap();
-        try {
-            if (adminInfo != null && adminInfo.getName() != null) {
-                if (adminInfoService.selectById(adminInfo.getId()).getFs().size() >0) {
-                    model.put("admin", adminInfo);
-                }
+        if (adminInfo != null && adminInfo.getName() != null) {
+            if (adminInfoService.selectById(adminInfo.getId()).getFs().size() >0) {
+                model.put("admin", adminInfo);
+                return BaseResponse.success(ResultCode.LOGIN_SUCCESS);
+            } else {
+                return BaseResponse.noAuthority(ResultCode.NO_AUTHORITY);
             }
-            return BaseResponse.success(ResultCode.SUCCESS);
-        } catch (Exception e) {
-            return BaseResponse.errorWithException(ResultCode.FAILED, e);
+        } else {
+            return BaseResponse.failure(ResultCode.LOGIN_FAILURE);
         }
+
 
     }
 

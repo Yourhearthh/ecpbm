@@ -2,6 +2,7 @@ package com.ecpbm.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ecpbm.pojo.AdminInfo;
+import com.ecpbm.pojo.LoginVo;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -20,5 +21,5 @@ public interface AdminInfoMapper extends BaseMapper<AdminInfo> {
 
     // 根据登录名和密码查询管理员
     @Select("select * from admin_info where name = #{name} and pwd = #{pwd}")
-    AdminInfo selectByNameAndPwd(AdminInfo ai);
+    AdminInfo selectByNameAndPwd(LoginVo ai);
 }
