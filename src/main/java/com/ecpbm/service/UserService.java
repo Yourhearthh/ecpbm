@@ -1,6 +1,7 @@
 package com.ecpbm.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ecpbm.dao.mapper.AdminInfoMapper;
 import com.ecpbm.dao.mapper.UserInfoMapper;
 import com.ecpbm.dao.service.AdminInfoServiceImpl;
 import com.ecpbm.dao.service.FunctionsServicesImpl;
@@ -27,6 +28,8 @@ public class UserService {
     AdminInfoServiceImpl adminInfoService;
     @Autowired
     FunctionsServicesImpl functionsService;
+    @Autowired
+    AdminInfoMapper adminInfoMapper;
 
     /**
      * 获取用户列表
@@ -67,8 +70,8 @@ public class UserService {
         AdminInfo adminInfo = adminInfoService.selectById(adminid);
         List<TreeNode> nodes = new ArrayList<>();
         //获取关联的Functions对象集合
-        List<Functions> functionsList = functionsService.list();
-//        List<Functions> functionsList = adminInfo.getFs();
+//        List<Functions> functionsList = functionsService.list();
+        List<Functions> functionsList = adminInfo.getFs();
                 // 对List<Functions>类型的Functions对象集合排序
         Collections.sort(functionsList);
         // 将排序后的Functions对象集合转换到List<TreeNode>类型的列表nodes
@@ -83,5 +86,14 @@ public class UserService {
         // children属性赋值(该节点包含的子节点)
         List<TreeNode> treeNodes = JsonFactory.buildtree(nodes, 0);
         return treeNodes;
+    }
+
+    /**
+     * 登录
+     * @param ai
+     * @return
+     */
+    public AdminInfo login(AdminInfo ai) {
+        return adminInfoMapper.selectByNameAndPwd(ai);
     }
 }
